@@ -1,12 +1,13 @@
+import { fromName } from '$lib/cutils';
 import { decodeToken, exists, saveAsAdmin } from '$lib/services/server';
-import { themes } from '$lib/themes';
-import { fromName } from '$lib/utils';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('token') || '';
-	const theme = event.cookies.get('theme');
 	const { decodedToken } = await decodeToken(token);
+
+	console.log(decodedToken);
+
 
 	if (decodedToken) {
 		const { uid, name, email, picture } = decodedToken;
@@ -27,13 +28,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	if (!theme || !themes.includes(theme)) {
-		return await resolve(event);
-	}
-
-	return await resolve(event, {
-		transformPageChunk: ({ html }) => {
-			return html.replace('data-theme=""', `data-theme="${theme}"`);
-		}
-	});
+	return await resolve(event);
 };

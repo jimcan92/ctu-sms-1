@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Download } from 'lucide-svelte';
-	import fileIcon from '$lib/images/file.png';
 	import { Select, YoutubeVideo } from '$lib/components';
+	import fileIcon from '$lib/images/file.png';
 	import {
 		currentSchedule,
 		currentSubject,
@@ -9,21 +8,25 @@
 		subjects as subjectsStore
 	} from '$lib/stores';
 
-	let value: string;
+	let value: string = $state('');
 
-	$: subjects = $subjectsStore.map((s) => s.uid ?? '');
-	$: if (!$currentSubject) currentSubject.set($subjectsStore.at(0)?.uid ?? '');
-	$: if (value) {
-		currentSubject.set(value);
-	} else {
-		currentSubject.set($currentSchedule?.subject);
-	}
+	let subjects = $derived($subjectsStore.map((s) => s.uid ?? ''));
+	$effect(() => {
+		if (!$currentSubject) currentSubject.set($subjectsStore.at(0)?.uid ?? '');
+	});
+	$effect(() => {
+		if (value) {
+			currentSubject.set(value);
+		} else {
+			currentSubject.set($currentSchedule?.subject);
+		}
+	});
 
-	$: appResources = $resources;
+	let appResources = $derived($resources);
 </script>
 
-<div class="flex flex-col gap-4 items-center w-full">
-	<div class="flex justify-center p-4 bg-base-300 w-full">
+<div class="flex w-full flex-col items-center gap-4">
+	<div class="flex w-full justify-center bg-base-300 p-4">
 		<Select label="Subject" bind:value items={subjects} />
 	</div>
 	{#each appResources as resource}
@@ -40,8 +43,8 @@
 					<a class="link" href={resource.url}>{resource.url}</a>
 				{/if}
 				{#if resource.type === 'file'}
-					<div class="flex items-center mt-2">
-						<img class="bg-base-content p-2 rounded-lg mr-4 w-16" src={fileIcon} alt="" />
+					<div class="mt-2 flex items-center">
+						<img class="mr-4 w-16 rounded-lg bg-base-content p-2" src={fileIcon} alt="" />
 						<a href={resource.url} class="link">{resource.filename}</a>
 					</div>
 				{/if}

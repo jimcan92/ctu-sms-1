@@ -1,11 +1,11 @@
 <script lang="ts">
 	import EventListTile from '$lib/components/EventListTile.svelte';
+	import { displayTime, getAttendanceToView } from '$lib/cutils';
 	import { deleteDocument } from '$lib/services/client';
 	import { selectedDate } from '$lib/stores';
 	import { selectedAttendance } from '$lib/stores/admin';
-	import { displayTime, getAttendanceToView } from '$lib/utils';
 
-	$: attendanceToView = getAttendanceToView($selectedAttendance, $selectedDate.toDate());
+	let attendanceToView = $derived(getAttendanceToView($selectedAttendance, $selectedDate.toDate()));
 
 	async function onDelete(uid?: string) {
 		if (uid) await deleteDocument('attendance', uid);

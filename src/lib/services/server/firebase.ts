@@ -1,11 +1,11 @@
-import type { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
-import admin from 'firebase-admin';
 import {
-	FIREBASE_PROJECT_ID,
 	FIREBASE_CLIENT_EMAIL,
-	FIREBASE_PRIVATE_KEY
+	FIREBASE_PRIVATE_KEY,
+	FIREBASE_PROJECT_ID
 } from '$env/static/private';
+import admin from 'firebase-admin';
 import { cert } from 'firebase-admin/app';
+import { type DecodedIdToken } from 'firebase-admin/auth';
 import { handleError } from '../utils';
 
 function initFirebaseAdmin() {
@@ -32,6 +32,7 @@ export async function decodeToken(token: string): Promise<{
 	try {
 		const { auth } = initFirebaseAdmin();
 		return { decodedToken: await auth.verifyIdToken(token) };
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		return { error: handleError(err) };
 	}

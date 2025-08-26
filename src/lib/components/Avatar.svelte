@@ -1,19 +1,15 @@
 <script lang="ts">
-	import { cn, getInitials } from '$lib/utils.js';
-	import { User2 } from 'lucide-svelte';
+	import { cn, getInitials } from '$lib/cutils.js';
+	import { User2 } from '@lucide/svelte';
 
-	export let student: Student | undefined | null;
-	export let outline:
-		| 'accent'
-		| 'primary'
-		| 'warning'
-		| 'error'
-		| 'info'
-		| 'base'
-		| 'success'
-		| undefined = undefined;
-	export let classes: string | undefined = undefined;
-	export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' = 'md';
+	interface Props {
+		student: Student | undefined | null;
+		outline?: 'accent' | 'primary' | 'warning' | 'error' | 'info' | 'base' | 'success' | undefined;
+		classes?: string | undefined;
+		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl';
+	}
+
+	let { student, outline = undefined, classes = undefined, size = 'md' }: Props = $props();
 
 	let cls = cn(classes, 'rounded-full', {
 		'ring-accent': outline === 'accent',
@@ -41,7 +37,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="avatar placeholder">
+	<div class="placeholder avatar">
 		<div class={cls}>
 			{#if student}
 				<span class="text-lg font-semibold">

@@ -1,7 +1,12 @@
 <script lang="ts">
-	export let when = false;
+	interface Props {
+		when?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { when = false, children }: Props = $props();
 </script>
 
 {#if when}
-	<slot />
+	{@render children?.()}
 {/if}

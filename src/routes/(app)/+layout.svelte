@@ -1,48 +1,50 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Theme } from '$lib/components';
 	import Avatar from '$lib/components/Avatar.svelte';
+	import ThemeSelect from '$lib/components/ThemeSelect.svelte';
+	import { cn } from '$lib/cutils.js';
 	import { currentStudent } from '$lib/stores';
-	import { cn } from '$lib/utils.js';
-	import { FileIcon, FilesIcon, Folders, UserCog2 } from 'lucide-svelte';
+	import { Folders, UserCog2 } from '@lucide/svelte';
 
-	export let data;
+	let { data, children } = $props();
 
-	$: isAdmin = data.userSession?.admin;
+	let isAdmin = $derived(data.userSession?.admin);
 </script>
 
-<div class="flex flex-col min-h-[100dvh]">
-	<div class="flex w-full" />
-	<div class="flex justify-center w-full bg-base-200 border-b border-base-content">
+<div class="flex min-h-[100dvh] flex-col">
+	<div class="flex w-full"></div>
+	<div class="border-base-content bg-base-200 flex w-full justify-center border-b">
 		<div class="navbar max-w-screen-xl">
 			<div class="navbar-start">
 				<a
-					class={cn('btn btn-ghost normal-case hover:bg-transparent text-xl', {
-						'btn-active': $page.url.pathname === '/'
+					class={cn('btn btn-ghost text-xl normal-case hover:bg-transparent', {
+						'btn-active': page.url.pathname === '/'
 					})}
 					href="/">CTU SMS</a
 				>
 			</div>
-			<div class="navbar-end pr-2 sm:pr-6 xl:pr-0 gap-4">
+			<div class="navbar-end gap-4 pr-2 sm:pr-6 xl:pr-0">
+				<ThemeSelect />
 				<a
 					href="/files"
-					class={cn('btn btn-outline btn-circle btn-ghost', {
-						'btn-active': $page.url.pathname === '/files'
+					class={cn('btn btn-circle btn-ghost btn-outline', {
+						'btn-active': page.url.pathname === '/files'
 					})}
 				>
 					<Folders />
 				</a>
 				<Theme />
 				{#if isAdmin}
-					<a href="/admin" class="btn btn-outline btn-circle btn-ghost">
+					<a href="/admin" class="btn btn-circle btn-ghost btn-outline">
 						<UserCog2 />
 					</a>
 				{/if}
-				<a href="/auth" class="btn btn-ghost btn-circle">
+				<a href="/auth" class="btn btn-circle btn-ghost">
 					<Avatar student={$currentStudent} outline="accent" />
 				</a>
 			</div>
 		</div>
 	</div>
-	<slot />
+	{@render children?.()}
 </div>

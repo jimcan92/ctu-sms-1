@@ -4,11 +4,13 @@ export { default as ConfirmDialog } from './ConfirmDialog.svelte';
 export { default as DatePicker } from './DatePicker.svelte';
 export { default as EventListTile } from './EventListTile.svelte';
 export { default as NavListTile } from './NavListTile.svelte';
+export { default as Only } from './Only.svelte';
 export { default as RollingDigit } from './RollingDigit.svelte';
 export { default as Theme } from './Theme.svelte';
-export { Input } from './ui/input';
 export { LabeledInput } from './ui/labeled-input';
 export { LabeledSelect } from './ui/labeled-select';
-export { Select } from './ui/select';
+// export { Select } from './ui/selecta';
 export { default as YoutubeVideo } from './YoutubeVideo.svelte';
-export { default as Only } from './Only.svelte';
+// import Input from './ui/Input.svelte';
+
+

@@ -1,8 +1,9 @@
+<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot (prefix-icon to prefix_icon) making the component unusable -->
 <script lang="ts">
+	import { cn } from '$lib/cutils';
+	import { X } from '@lucide/svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
 	import type { InputEvents } from '.';
-	import { X } from 'lucide-svelte';
 
 	type $$Props = HTMLInputAttributes & { label: string; disableClearButton?: boolean };
 	type $$Events = InputEvents;
@@ -17,8 +18,8 @@
 
 <div class="form-control w-full">
 	<label for="idNumber" class="label">{label}</label>
-	<div class="flex relative w-full">
-		<span class="absolute left-4 inset-y-0 z-10 flex items-center justify-center">
+	<div class="relative flex w-full">
+		<span class="absolute inset-y-0 left-4 z-10 flex items-center justify-center">
 			<slot name="prefix-icon" />
 		</span>
 		<input
@@ -42,9 +43,9 @@
 			on:input
 			{...$$restProps}
 		/>
-		<span class="absolute right-4 inset-y-0 z-10 flex items-center justify-center">
+		<span class="absolute inset-y-0 right-4 z-10 flex items-center justify-center">
 			{#if !disableClearButton && !disabled && value}
-				<button type="button" class="btn btn-sm btn-ghost btn-circle" on:click={() => (value = '')}>
+				<button type="button" class="btn btn-circle btn-ghost btn-sm" on:click={() => (value = '')}>
 					<X />
 				</button>
 			{/if}

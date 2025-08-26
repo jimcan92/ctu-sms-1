@@ -1,46 +1,48 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { LabeledInput, LabeledSelect, Only, Select } from '$lib/components';
+	import { page } from '$app/state';
+	import { LabeledInput, Select } from '$lib/components';
 	import YoutubeVideo from '$lib/components/YoutubeVideo.svelte';
 	import { saveDocument, upload } from '$lib/services/client';
 	import { deleteFile, fileExists } from '$lib/services/client/firebase/storage';
 	import { subjects } from '$lib/stores';
 	import { selectedResources, selectedSubject } from '$lib/stores/admin';
-	import { Save } from 'lucide-svelte';
+	import { Save } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
-	let resource = $selectedResources.find((s) => s.uid === $page.params.uid);
+	let resource = $selectedResources.find((s) => s.uid === page.params.uid);
 
 	let fileInput: HTMLInputElement;
 
-	let resourceType: AppResourceType = 'file';
-	let title = '';
-	let url = '';
-	let linkId: string | undefined;
-	let filename = '';
-	let description = '';
-	let subject = '';
+	let resourceType: AppResourceType = $state('file');
+	let title = $state('');
+	let url = $state('');
+	let linkId: string | undefined = $state();
+	let filename = $state('');
+	let description = $state('');
+	let subject = $state('');
 
-	let files: FileList | undefined = undefined;
+	let files: FileList | undefined = $state(undefined);
 
-	let busy = false;
+	let busy = $state(false);
 
-	$: {
+	$effect(() => {
 		const a = url.trim().split('?').at(0);
 		if (a) {
 			const b = a.split('/').at(-1);
 			if (b) linkId = b;
 		}
-	}
+	});
 
-	$: if (files) {
-		const file = files.item(0);
+	$effect(() => {
+		if (files) {
+			const file = files.item(0);
 
-		if (file && !filename) {
-			filename = file.name;
+			if (file && !filename) {
+				filename = file.name;
+			}
 		}
-	}
+	});
 
 	onMount(() => {
 		subject = $selectedSubject ?? '';
@@ -130,7 +132,7 @@
 <div class="flex justify-center p-4">
 	<div class="card w-full max-w-sm bg-base-300">
 		<div class="card-body">
-			<h2 class="card-title mb-4">Add New Resource</h2>
+			<h2 class="mb-4 card-title">Add New Resource</h2>
 			<Select label="Subjects" bind:value={subject} items={$subjects.map((s) => s.uid ?? '')} />
 			<Select
 				label="Type"
@@ -147,10 +149,10 @@
 				<YoutubeVideo bind:linkId />
 			{/if}
 			{#if resourceType === 'file'}
-				<div class="join mt-2">
+				<div class="mt-2 join">
 					<button
 						class="btn join-item"
-						on:click={() => {
+						onclick={() => {
 							fileInput.click();
 						}}>Choose File</button
 					>
@@ -163,12 +165,12 @@
 					name="desc"
 					class="textarea"
 					bind:value={description}
-				/>
+				></textarea>
 			</div>
-			<div class="card-actions mt-4 justify-end">
-				<button class="btn btn-accent" on:click={onSave}>
+			<div class="mt-4 card-actions justify-end">
+				<button class="btn btn-accent" onclick={onSave}>
 					{#if busy}
-						<Save size={18} />Saving <span class="loading loading-dots" />
+						<Save size={18} />Saving <span class="loading loading-dots"></span>
 					{:else}
 						<Save size={18} />Save
 					{/if}

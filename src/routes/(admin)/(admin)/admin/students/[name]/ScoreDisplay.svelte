@@ -1,11 +1,11 @@
 <script lang="ts">
 	import EventListTile from '$lib/components/EventListTile.svelte';
+	import { getScoresToView, toTitleCase } from '$lib/cutils';
 	import { deleteDocument } from '$lib/services/client';
 	import { selectedDate } from '$lib/stores';
 	import { selectedScores } from '$lib/stores/admin';
-	import { getScoresToView, toTitleCase } from '$lib/utils';
 
-	$: scoresToView = getScoresToView($selectedScores, $selectedDate.toDate());
+	let scoresToView = $derived(getScoresToView($selectedScores, $selectedDate.toDate()));
 
 	async function onDelete(uid?: string) {
 		if (uid) await deleteDocument('scores', uid);

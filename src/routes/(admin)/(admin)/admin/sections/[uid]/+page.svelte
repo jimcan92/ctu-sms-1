@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { saveDocument } from '$lib/services/client/firebase/db';
 	import { sections as sectionsStore } from '$lib/stores';
+	import { onMount } from 'svelte';
 
 	let sections = $sectionsStore;
-	let name: string;
-	let section = sections.find((s) => s.uid === $page.params.uid);
-	let prevPath: string = '/admin/sections';
+	let name: string = $state('');
+	let section = sections.find((s) => s.uid === page.params.uid);
+	let prevPath: string = $state('/admin/sections');
 
 	onMount(() => {
 		nameInput.focus();
@@ -34,9 +34,9 @@
 	}
 </script>
 
-<div class="flex flex-col px-4 md:px-8 pt-12">
-	<div class="flex self-center flex-col gap-4 max-w-sm w-full bg-base-300 p-6 rounded-lg shadow-lg">
-		<h1 class="text-xl font-semibold mb-4">
+<div class="flex flex-col px-4 pt-12 md:px-8">
+	<div class="flex w-full max-w-sm flex-col gap-4 self-center rounded-lg bg-base-300 p-6 shadow-lg">
+		<h1 class="mb-4 text-xl font-semibold">
 			{section ? `Edit '${section.uid}'` : 'Add New Section'}
 		</h1>
 		<input
@@ -46,9 +46,9 @@
 			bind:value={name}
 			placeholder="Section Name"
 		/>
-		<div class="flex gap-4 mt-4 justify-end">
+		<div class="mt-4 flex justify-end gap-4">
 			<a href={prevPath} class="btn btn-ghost">Cancel</a>
-			<button class="btn btn-accent" on:click={onSave}>Save</button>
+			<button class="btn btn-accent" onclick={onSave}>Save</button>
 		</div>
 	</div>
 </div>

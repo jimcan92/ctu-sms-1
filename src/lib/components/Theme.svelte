@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { cn } from '$lib/cutils';
 	import { themes } from '$lib/themes';
-	import { cn } from '$lib/utils';
-	import { Check, Palette } from 'lucide-svelte';
+	import { Check, Palette } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
-	let current_theme = 'dark';
+	let current_theme = $state('dark');
 
 	onMount(() => {
 		if (typeof window !== 'undefined') {
@@ -28,32 +28,32 @@
 </script>
 
 <div class="dropdown dropdown-end">
-	<button class="btn btn-outline btn-circle flex gap-4 flex-nowrap">
+	<button class="btn btn-circle btn-outline flex flex-nowrap gap-4">
 		<Palette />
 	</button>
-	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<ul
 		tabindex="0"
 		class={cn(
 			'dropdown-content',
 			'bg-base-200 drop-shadow-2xl',
-			'p-3 mt-4 min-w-[150px]',
-			'rounded-2xl z-10',
-			'border border-base-100/50'
+			'mt-4 min-w-[150px] p-3',
+			'z-10 rounded-2xl',
+			'border-base-100/50 border'
 		)}
 	>
-		<div class="flex flex-col overflow-y-auto max-h-80 rounded-lg gap-2">
+		<div class="flex max-h-80 flex-col gap-2 overflow-y-auto rounded-lg">
 			{#each themes as theme}
 				<button
 					data-theme={theme}
-					class="btn flex bg-base-300 rounded-lg flex-nowrap w-full gap-2"
-					on:click={() => setTheme(theme)}
+					class="btn bg-base-300 flex w-full flex-nowrap gap-2 rounded-lg"
+					onclick={() => setTheme(theme)}
 				>
-					<div class="flex w-2 h-1/2 rounded bg-primary" />
-					<div class="flex w-2 h-1/2 rounded bg-secondary" />
-					<div class="flex w-2 h-1/2 rounded bg-accent" />
-					<div class="flex w-2 h-1/2 rounded bg-base-100" />
-					<span class="flex-1 text-left m-2">{theme}</span>
+					<div class="flex h-1/2 w-2 rounded bg-primary"></div>
+					<div class="flex h-1/2 w-2 rounded bg-secondary"></div>
+					<div class="flex h-1/2 w-2 rounded bg-accent"></div>
+					<div class="bg-base-100 flex h-1/2 w-2 rounded"></div>
+					<span class="m-2 flex-1 text-left">{theme}</span>
 					{#if current_theme === theme}
 						<Check size={18} />
 					{/if}

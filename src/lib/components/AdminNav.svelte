@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { Folder, FolderOpen } from 'lucide-svelte';
+	import { page } from '$app/state';
+	import { Folder, FolderOpen } from '@lucide/svelte';
 
-	$: paths = $page.url.pathname.split('/').filter((pn) => pn.length > 0);
+	let paths = $derived(page.url.pathname.split('/').filter((pn) => pn.length > 0));
 </script>
 
 <div class="breadcrumbs px-2">
@@ -11,12 +11,12 @@
 			{@const p = paths.slice(0, paths.indexOf(path) + 1).join('/')}
 			<li>
 				{#if paths.length === i + 1}
-					<span class="flex gap-2 items-center capitalize">
+					<span class="flex items-center gap-2 capitalize">
 						<FolderOpen size={18} />
 						{decodeURI(path)}
 					</span>
 				{:else}
-					<a href={`/${p}`} class="flex gap-2 items-center capitalize">
+					<a href={`/${p}`} class="flex items-center gap-2 capitalize">
 						<Folder size={18} />
 						{decodeURI(path)}
 					</a>

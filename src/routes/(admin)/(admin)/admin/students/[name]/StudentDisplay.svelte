@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { cn, toName } from '$lib/cutils';
 	import { selectedStudent, selectedUid, studentsBySection } from '$lib/stores/admin';
-	import { cn, toName } from '$lib/utils';
-	import { SkipBack, SkipForward } from 'lucide-svelte';
+	import { SkipBack, SkipForward } from '@lucide/svelte';
 
-	$: cs = $selectedStudent;
-	$: ci = cs?.index;
-	$: ps = ci && ci > 0 ? $studentsBySection.at(ci - 1) : undefined;
-	$: ns =
+	let cs = $derived($selectedStudent);
+	let ci = $derived(cs?.index);
+	let ps = $derived(ci && ci > 0 ? $studentsBySection.at(ci - 1) : undefined);
+	let ns = $derived(
 		typeof ci !== 'undefined' && ci < $studentsBySection.length - 1
 			? $studentsBySection.at(ci + 1)
-			: undefined;
+			: undefined
+	);
 
 	function onPrev() {
 		if (ps) {
@@ -36,16 +37,16 @@
 	class={cn(
 		'flex items-center',
 		'bg-base-100',
-		'w-full gap-2 p-2 mb-2 max-w-sm',
-		'border border-base-200 rounded-2xl',
+		'mb-2 w-full max-w-sm gap-2 p-2',
+		'border-base-200 rounded-2xl border',
 		'hover:drop-shadow-[0_0_4px_#3d98ff]'
 	)}
 >
-	<button disabled={!ps} class="btn" on:click={onPrev}><SkipBack /></button>
-	<div class="flex items-center justify-center bg-base-200 rounded-lg w-full h-full">
+	<button disabled={!ps} class="btn" onclick={onPrev}><SkipBack /></button>
+	<div class="bg-base-200 flex h-full w-full items-center justify-center rounded-lg">
 		<h1 class="text-xl font-semibold">
 			{toName(cs?.value?.firstname ?? '', cs?.value?.lastname ?? '')}
 		</h1>
 	</div>
-	<button disabled={!ns} class="btn" on:click={onNext}><SkipForward /></button>
+	<button disabled={!ns} class="btn" onclick={onNext}><SkipForward /></button>
 </div>

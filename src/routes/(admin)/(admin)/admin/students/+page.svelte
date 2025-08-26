@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Avatar from '$lib/components/Avatar.svelte';
+	import { cn, toName } from '$lib/cutils.js';
 	import { selectedSection, selectedUid, studentsBySection } from '$lib/stores/admin';
-	import { cn, toName } from '$lib/utils.js';
 
 	function onSelect(s: Student) {
 		selectedUid.set(s.uid);
@@ -25,8 +25,8 @@
 		{#each $studentsBySection as student}
 			{@const name = toName(student.firstname, student.lastname)}
 			<button
-				class={cn('flex items-center', 'p-3 gap-3', 'bg-base-300 hover:bg-primary', 'rounded-lg')}
-				on:click={() => onSelect(student)}
+				class={cn('flex items-center', 'gap-3 p-3', 'bg-base-300 hover:bg-primary', 'rounded-lg')}
+				onclick={() => onSelect(student)}
 			>
 				<Avatar {student} />
 				<span class="text-lg">{student.idNumber}</span>

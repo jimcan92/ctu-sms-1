@@ -1,34 +1,24 @@
 <script lang="ts">
-	import type { ChangeEventHandler } from 'svelte/elements.js';
-	import { Baseline, ChevronsLeft, Hash, LogOut, PenSquare, Save, Users2, X } from 'lucide-svelte';
-	import { updateDocument, signOut } from '$lib/services/client';
-	import UpdateAvatar from './UpdateAvatar.svelte';
-	import { Avatar, Select } from '$lib/components';
+	import { Avatar } from '$lib/components';
+	import Combobox from '$lib/components/Combobox.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import { LabeledInput } from '$lib/components/ui/labeled-input';
-	import { LabeledSelect } from '$lib/components/ui/labeled-select';
+	import { signOut, updateDocument } from '$lib/services/client';
 	import { currentStudent, currentUid, sections, subjects } from '$lib/stores';
+	import { Baseline, Hash, LogOut, PenSquare, Save, X } from '@lucide/svelte';
+	import type { ChangeEventHandler } from 'svelte/elements';
+	import UpdateAvatar from './UpdateAvatar.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: secs = $sections.map((s) => s.uid ?? '');
-	$: subs = $subjects;
+	let subjectCodes: string[] = $state([]);
+	let editing = $state(false);
+	let fname = $state('');
+	let lname = $state('');
+	let idNumber = $state('');
+	let sectionCode = $state('');
 
-	let subjectCodes: string[] = [];
-	let editing = false;
-	let fname = '';
-	let lname = '';
-	let idNumber = '';
-	let sectionCode = '';
-
-	let busy = false;
-	$: {
-		if (busy) {
-			editing = false;
-		}
-	}
-
-	$: student = $currentStudent;
-	$: if (student) setInitialValues();
+	let busy = $state(false);
 
 	const setInitialValues = () => {
 		fname = student?.firstname ?? '';
@@ -68,17 +58,28 @@
 		await signOut();
 		busy = false;
 	}
+	let secs = $derived($sections.map((s) => s.uid ?? ''));
+	let subs = $derived($subjects);
+	$effect(() => {
+		if (busy) {
+			editing = false;
+		}
+	});
+	let student = $derived($currentStudent);
+	$effect(() => {
+		if (student) setInitialValues();
+	});
 </script>
 
 <main class="flex min-h-screen items-center justify-center p-4">
 	<div
-		class="grid md:grid-cols-2 max-w-sm md:max-w-none shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="grid max-w-sm shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff] md:max-w-none md:grid-cols-2"
 	>
 		<div
-			class="flex flex-col rounded-none rounded-t-lg md:rounded-l-lg md:rounded-none items-center bg-gradient-to-br from-primary to-accent"
+			class="flex flex-col items-center rounded-none rounded-t-lg bg-gradient-to-br from-primary to-accent md:rounded-none md:rounded-l-lg"
 		>
-			<div class="flex flex-col items-center p-8 gap-2 h-full justify-center">
-				<div class="flex relative">
+			<div class="flex h-full flex-col items-center justify-center gap-2 p-8">
+				<div class="relative flex">
 					<Avatar {student} size="4xl" outline="accent" />
 					<UpdateAvatar
 						photoUrl={student?.photoUrl}
@@ -86,26 +87,55 @@
 						section={sectionCode}
 					/>
 				</div>
-				<p class="md text-lg text-center">{data.userSession.email}</p>
-				<button class="btn btn-outline" on:click={onSignOut}><LogOut size={18} /> Sign out</button>
+				<p class="md text-center text-lg">{data.userSession.email}</p>
+				<button class="btn btn-outline" onclick={onSignOut}><LogOut size={18} /> Sign out</button>
 			</div>
 		</div>
 		<div
-			class="flex flex-col bg-base-300 p-4 md:p8 rounded-none rounded-b-lg md:rounded-none md:rounded-r-lg items-center h-full justify-center"
+			class="md:p8 bg-base-300 flex h-full flex-col items-center justify-center rounded-none rounded-b-lg p-4 md:rounded-none md:rounded-r-lg"
 		>
-			<form class="flex flex-col w-full items-center">
+			<form class="flex w-full flex-col items-center">
+				<fieldset class="fieldset w-full">
+					<label for="idNumber" class="label">ID Number</label>
+					<!-- <Input
+						id="idNumber"
+						icon={Hash}
+						disabled={!editing}
+						bind:value={idNumber}
+						label="ID Number"
+					/>
+					<label for="fname" class="label">First Name</label>
+					<Input
+						id="fname"
+						icon={Baseline}
+						disabled={!editing}
+						bind:value={fname}
+						label="First Name"
+					/>
+					<label for="lname" class="label">Last Name</label>
+					<Input
+						id="lname"
+						icon={Baseline}
+						disabled={!editing}
+						bind:value={lname}
+						label="Last Name"
+					/> -->
+					<label for="sectionCode" class="label">Last Name</label>
+					<Combobox />
+					<!-- @migration-task: migrate this slot by hand, `prefix-icon` is an invalid identifier -->
+				</fieldset>
 				<LabeledInput disabled={!editing} bind:value={idNumber} label="ID Number">
+					<!-- @migration-task: migrate this slot by hand, `prefix-icon` is an invalid identifier -->
 					<Hash slot="prefix-icon" size={18} />
 				</LabeledInput>
 				<LabeledInput disabled={!editing} bind:value={fname} label="First Name">
+					<!-- @migration-task: migrate this slot by hand, `prefix-icon` is an invalid identifier -->
 					<Baseline slot="prefix-icon" size={18} />
 				</LabeledInput>
 				<LabeledInput disabled={!editing} bind:value={lname} label="Last Name">
+					<!-- @migration-task: migrate this slot by hand, `prefix-icon` is an invalid identifier -->
 					<Baseline slot="prefix-icon" size={18} />
 				</LabeledInput>
-				<Select label="Section" bind:value={sectionCode} items={secs}>
-					<Users2 slot="prefix-icon" size={18} />
-				</Select>
 				<div class="form-control">
 					<p class="label">Subjects</p>
 					<div class={`rounded-lg px-4 w-full${editing ? ' bg-base-100' : ' bg-base-200'}`}>
@@ -117,9 +147,9 @@
 									checked={subjectCodes.includes(subject.uid ?? '')}
 									value={subject.uid}
 									class="checkbox checkbox-sm mt-4"
-									on:change={handleSubjectSelect}
+									onchange={handleSubjectSelect}
 								/>
-								<div class="collapse rounded-md collapse-arrow">
+								<div class="collapse-arrow collapse rounded-md">
 									<input type="checkbox" />
 									<div class="collapse-title">{subject.uid}</div>
 									<div class="collapse-content">
@@ -130,15 +160,31 @@
 						{/each}
 					</div>
 				</div>
-				<div class="divider" />
-				<div class="flex w-full gap-4 justify-evenly">
-					<a href="/" class="btn btn-ghost sm:btn-md btn-sm" on:click={() => (editing = !editing)}>
+				<div class="divider"></div>
+				<div class="flex w-full justify-evenly gap-4">
+					<!-- <a href="/" class="btn btn-ghost btn-sm sm:btn-md" onclick={() => (editing = !editing)}>
 						<ChevronsLeft size={18} /> Home
-					</a>
+					</a> -->
+					<Button
+						variant="ghost"
+						size="md"
+						class="w-full sm:w-auto"
+						onclick={() => {
+							if (editing) setInitialValues();
+							editing = !editing;
+						}}
+					>
+						{#if editing}
+							<X size={18} /> Cancel
+						{:else}
+							<PenSquare size={18} /> Update
+						{/if}
+					</Button>
+
 					<button
 						type="button"
-						class="btn btn-ghost sm:btn-md btn-sm"
-						on:click={() => {
+						class="btn btn-ghost btn-sm sm:btn-md"
+						onclick={() => {
 							if (editing) setInitialValues();
 							editing = !editing;
 						}}
@@ -150,12 +196,12 @@
 						{/if}
 					</button>
 					<button
-						class="btn btn-accent sm:btn-md btn-sm"
+						class="btn btn-sm btn-accent sm:btn-md"
 						disabled={!editing}
-						on:click={handleSubmit}
+						onclick={handleSubmit}
 					>
 						{#if busy}
-							<Save size={18} /> Saving <span class="loading loading-dots loading-sm" />
+							<Save size={18} /> Saving <span class="loading loading-sm loading-dots"></span>
 						{:else}
 							<Save size={18} /> Save
 						{/if}

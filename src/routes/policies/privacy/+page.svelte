@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import { ChevronsLeft } from 'lucide-svelte';
+	import { ChevronsLeft } from '@lucide/svelte';
 
-	let prevPage = '/';
+	let prevPage = $state('/');
 
 	afterNavigate(({ from }) => {
 		if (prevPage === '/' && !from?.url.pathname.includes('/policies'))
@@ -10,8 +10,8 @@
 	});
 </script>
 
-<main class="min-h-screen w-full flex flex-col items-center p-4 sm:p-6 md:p-20">
-	<div class="prose sm:prose-base prose-sm">
+<main class="flex min-h-screen w-full flex-col items-center p-4 sm:p-6 md:p-20">
+	<div class="sm:prose-base prose-sm prose">
 		<h1>Privacy Policy</h1>
 
 		<p>Last Updated: Aug 29, 2023</p>
@@ -179,7 +179,7 @@
 		<p>Effective Date: Aug 29, 2023</p>
 	</div>
 
-	<a class="link link-hover link-accent flex" href={prevPage}>
+	<a class="flex link link-accent link-hover" href={prevPage}>
 		<ChevronsLeft /> Go Back
 	</a>
 </main>

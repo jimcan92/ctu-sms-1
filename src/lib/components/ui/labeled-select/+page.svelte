@@ -1,6 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot (prefix-icon to prefix_icon) making the component unusable -->
 <script lang="ts">
+	import { cn } from '$lib/cutils';
 	import type { HTMLSelectAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
 	import type { SelectEvents } from '.';
 
 	type $$Props = HTMLSelectAttributes & { label: string };
@@ -15,8 +16,8 @@
 
 <div class="form-control w-full">
 	<label for="idNumber" class="label">{label}</label>
-	<div class="flex relative w-full">
-		<span class="absolute left-4 inset-y-0 z-10 flex items-center justify-center">
+	<div class="relative flex w-full">
+		<span class="absolute inset-y-0 left-4 z-10 flex items-center justify-center">
 			<slot name="prefix-icon" />
 		</span>
 		<select

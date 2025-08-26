@@ -1,7 +1,8 @@
 <script lang="ts">
+	import LoginForm from '$lib/components/login-form.svelte';
 	import { signinWithGoogle } from '$lib/services/client';
 
-	let busy = false;
+	let busy = $state(false);
 
 	const onSignin = async () => {
 		busy = true;
@@ -10,7 +11,7 @@
 	};
 </script>
 
-<main class="flex min-h-screen items-center justify-center p-4">
+<!-- <main class="flex min-h-screen items-center justify-center p-4">
 	<div
 		class="grid md:grid-cols-2 max-w-sm md:max-w-none shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
@@ -37,7 +38,7 @@
 			<p class="text-center">You need to signin with your google account to continue</p>
 			<button
 				class="btn w-full max-w-md bg-slate-50 hover:bg-slate-400 text-slate-900 mt-6 mb-2"
-				on:click={onSignin}
+				onclick={onSignin}
 				disabled={busy}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -60,7 +61,7 @@
 					<path d="M1 1h22v22H1z" fill="none" />
 				</svg>
 				{#if busy}
-					Signing in <span class="loading loading-dots" />
+					Signing in <span class="loading loading-dots"></span>
 				{:else}
 					Sign in with Google
 				{/if}
@@ -73,4 +74,9 @@
 			</p>
 		</div>
 	</div>
-</main>
+</main> -->
+<div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
+	<div class="w-full max-w-sm md:max-w-3xl">
+		<LoginForm />
+	</div>
+</div>

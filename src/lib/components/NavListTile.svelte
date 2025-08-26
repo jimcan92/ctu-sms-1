@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { ChevronRight } from 'lucide-svelte';
+	import { ChevronRight } from '@lucide/svelte';
 
-	export let title: string;
-	export let to: string;
-	export let checked;
+	interface Props {
+		title: string;
+		to: string;
+		checked: any;
+		icon?: import('svelte').Snippet;
+	}
+
+	let { title, to, checked = $bindable(), icon }: Props = $props();
 
 	const closeDrawer = () => (checked = false);
 </script>
@@ -11,11 +16,11 @@
 <li>
 	<a
 		href={to}
-		on:click={closeDrawer}
-		class="btn btn-ghost capitalize flex justify-between items-center w-full"
+		onclick={closeDrawer}
+		class="btn flex w-full items-center justify-between capitalize btn-ghost"
 	>
-		<span class="flex gap-2 items-center">
-			<slot name="icon" />
+		<span class="flex items-center gap-2">
+			{@render icon?.()}
 			{title}
 		</span>
 		<ChevronRight size={18} />

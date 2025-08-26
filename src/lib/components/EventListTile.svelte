@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { cn, toTitleCase } from '$lib/utils';
-	import { X } from 'lucide-svelte';
+	import { cn, toTitleCase } from '$lib/cutils';
+	import { X } from '@lucide/svelte';
 
-	export let type: 'attendance' | 'score' = 'attendance';
-	export let onClose: VoidFunction | undefined = undefined;
+	interface Props {
+		type?: 'attendance' | 'score';
+		onClose?: VoidFunction | undefined;
+		children?: import('svelte').Snippet;
+	}
+
+	let { type = 'attendance', onClose = undefined, children }: Props = $props();
 </script>
 
 <div
@@ -11,7 +16,7 @@
 		'flex',
 		'bg-base-200',
 		'rounded-lg',
-		'max-w-sm w-full',
+		'w-full max-w-sm',
 		'hover:drop-shadow-[0_0_4px_#3d98ff]'
 	)}
 >
@@ -24,11 +29,11 @@
 		<p class="label">{toTitleCase(type)}</p>
 	</div>
 	<div class={cn('flex flex-1 flex-col justify-evenly gap-2', 'p-4')}>
-		<slot />
+		{@render children?.()}
 	</div>
 	{#if onClose}
 		<div class="flex p-2">
-			<button class="btn btn-sm btn-circle btn-ghost" on:click={onClose}><X size={18} /></button>
+			<button class="btn btn-circle btn-ghost btn-sm" onclick={onClose}><X size={18} /></button>
 		</div>
 	{/if}
 </div>

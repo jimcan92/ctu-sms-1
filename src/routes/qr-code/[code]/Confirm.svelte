@@ -5,14 +5,18 @@
 	import { Timestamp } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
-	export let uid: string;
-	export let subject: string;
+	interface Props {
+		uid: string;
+		subject: string;
+	}
 
-	$: aStore = $attendanceStore;
+	let { uid, subject }: Props = $props();
 
-	let done = false;
-	let busy = false;
-	let attendance: Attendance | undefined;
+	let aStore = $derived($attendanceStore);
+
+	let done = $state(false);
+	let busy = $state(false);
+	let attendance: Attendance | undefined = $state();
 
 	function aIsToday(a: Attendance) {
 		return dayjs().isSame(a.time.toDate(), 'day') && a.for === subject;
@@ -43,7 +47,7 @@
 	<p class="text-warning">You've already scanned this Attendance QR.</p>
 {:else if busy}
 	<span>
-		Saving attendance <div class="loading loading-dots loading-md" />
+		Saving attendance <div class="loading loading-dots loading-md"></div>
 	</span>
 {:else}
 	<div class="flex flex-col gap-2">

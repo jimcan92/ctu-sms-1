@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { displayTime, getAttendanceToView } from '$lib/utils';
 	import { EventListTile } from '$lib/components';
+	import { displayTime, getAttendanceToView } from '$lib/cutils';
 	import { attendance, selectedDate } from '$lib/stores';
 
-	$: attendanceToView = getAttendanceToView($attendance, $selectedDate.toDate());
+	let attendanceToView = $derived(getAttendanceToView($attendance, $selectedDate.toDate()));
 </script>
 
-<div class="flex flex-col gap-4 max-w-sm self-center w-full">
+<div class="flex w-full max-w-sm flex-col gap-4 self-center">
 	{#each attendanceToView as attendance}
 		<EventListTile type="attendance">
 			<div class="flex gap-4">

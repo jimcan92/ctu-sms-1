@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { getScoresToView, toTitleCase } from '$lib/utils';
 	import { EventListTile } from '$lib/components';
+	import { getScoresToView, toTitleCase } from '$lib/cutils';
 	import { scores as scoresStore, selectedDate } from '$lib/stores';
 
-	$: scores = getScoresToView($scoresStore, $selectedDate.toDate());
+	let scores = $derived(getScoresToView($scoresStore, $selectedDate.toDate()));
 </script>
 
-<div class="flex flex-col gap-4 max-w-sm self-center w-full">
+<div class="flex w-full max-w-sm flex-col gap-4 self-center">
 	{#each scores as score}
 		<EventListTile type="score">
 			<div class="flex gap-4">

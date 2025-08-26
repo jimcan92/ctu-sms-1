@@ -1,24 +1,23 @@
 <script lang="ts">
 	import Avatar from '$lib/components/Avatar.svelte';
+	import { timeToDisplay, toName } from '$lib/cutils';
 	import { currentSchedule, sections, subjects } from '$lib/stores';
 	import { selectedResources, studentsBySection } from '$lib/stores/admin';
-	import { timeToDisplay, toName } from '$lib/utils';
-	import { CircleSlash2, Download, File, FileText, TimerOff, Users2, Youtube } from 'lucide-svelte';
-	import fileIcon from '$lib/images/file.png';
+	import { CircleSlash2, File, FileText, TimerOff, Users2, Youtube } from '@lucide/svelte';
 
-	$: threeStudents = $studentsBySection?.slice(0, 3);
-	$: threeSections = $sections?.slice(0, 3);
-	$: threeSubjects = $subjects?.slice(0, 3);
-	$: threeResources = $selectedResources?.slice(0, 3) ?? [];
+	let threeStudents = $derived($studentsBySection?.slice(0, 3));
+	let threeSections = $derived($sections?.slice(0, 3));
+	let threeSubjects = $derived($subjects?.slice(0, 3));
+	let threeResources = $derived($selectedResources?.slice(0, 3) ?? []);
 </script>
 
-<div class="grid md:grid-cols-2 p-4 md:p-8 gap-4 md:gap-8">
+<div class="grid gap-4 p-4 md:grid-cols-2 md:gap-8 md:p-8">
 	<a
 		href="admin/schedules"
-		class="flex flex-col bg-base-300 rounded-lg shadow-lg p-4 hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="bg-base-300 flex flex-col rounded-lg p-4 shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
 		<h4 class="text-xl font-semibold">Current Schedule</h4>
-		<div class="divider" />
+		<div class="divider"></div>
 		{#if $currentSchedule}
 			{@const sched = $currentSchedule}
 			<div class="flex flex-col">
@@ -44,7 +43,7 @@
 				</span>
 			</div>
 		{:else}
-			<span class="flex gap-2 items-center text-lg">
+			<span class="flex items-center gap-2 text-lg">
 				<TimerOff size={18} />
 				Vacant
 			</span>
@@ -52,10 +51,10 @@
 	</a>
 	<a
 		href="/admin/students"
-		class="flex flex-col bg-base-300 rounded-lg shadow-lg p-4 hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="bg-base-300 flex flex-col rounded-lg p-4 shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
 		<h4 class="text-xl font-semibold">Students</h4>
-		<div class="divider" />
+		<div class="divider"></div>
 		{#if threeStudents}
 			<div class="flex flex-col gap-4">
 				{#each threeStudents as student}
@@ -71,10 +70,10 @@
 	</a>
 	<a
 		href="/admin/resources"
-		class="flex flex-col bg-base-300 rounded-lg shadow-lg p-4 hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="bg-base-300 flex flex-col rounded-lg p-4 shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
 		<h4 class="text-xl font-semibold">Resources</h4>
-		<div class="divider" />
+		<div class="divider"></div>
 		{#if threeResources.length > 0}
 			<div class="flex flex-col gap-4">
 				{#each threeResources as resource}
@@ -92,7 +91,7 @@
 				{/each}
 			</div>
 		{:else}
-			<span class="flex gap-2 items-center text-lg">
+			<span class="flex items-center gap-2 text-lg">
 				<CircleSlash2 size={18} />
 				Empty
 			</span>
@@ -100,10 +99,10 @@
 	</a>
 	<a
 		href="/admin/sections"
-		class="flex flex-col bg-base-300 rounded-lg shadow-lg p-4 hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="bg-base-300 flex flex-col rounded-lg p-4 shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
 		<h4 class="text-xl font-semibold">Sections</h4>
-		<div class="divider" />
+		<div class="divider"></div>
 		<div class="flex flex-col gap-4">
 			{#each threeSections as section}
 				<div class="flex items-center gap-4">
@@ -115,10 +114,10 @@
 	</a>
 	<a
 		href="/admin/subjects"
-		class="flex flex-col bg-base-300 rounded-lg shadow-lg p-4 hover:drop-shadow-[0_0_4px_#3d98ff]"
+		class="bg-base-300 flex flex-col rounded-lg p-4 shadow-lg hover:drop-shadow-[0_0_4px_#3d98ff]"
 	>
 		<h4 class="text-xl font-semibold">Subjects</h4>
-		<div class="divider" />
+		<div class="divider"></div>
 		<div class="flex flex-col gap-4">
 			{#each threeSubjects as subject}
 				<div class="flex items-center gap-4">

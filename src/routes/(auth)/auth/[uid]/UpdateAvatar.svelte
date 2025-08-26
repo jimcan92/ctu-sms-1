@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { Pen, Save, X } from 'lucide-svelte';
-	import { upload, updateDocument } from '$lib/services/client';
+	import { page } from '$app/state';
+	import { updateDocument, upload } from '$lib/services/client';
+	import { Pen, Save, X } from '@lucide/svelte';
 
-	export let photoUrl = '';
-	export let imgName = '';
-	export let section = '';
+	interface Props {
+		photoUrl?: string;
+		imgName?: string;
+		section?: string;
+	}
+
+	let { photoUrl = '', imgName = '', section = '' }: Props = $props();
 
 	let dialog: HTMLDialogElement;
 	let input: HTMLInputElement;
@@ -13,7 +17,7 @@
 
 	let imgFile: File | null = null;
 
-	let busy = false;
+	let busy = $state(false);
 
 	function onChange() {
 		if (input.files) {
@@ -41,7 +45,7 @@
 			const { url } = await upload(imgFile, `avatars/${section}`);
 
 			if (url) {
-				const uid = $page.data.userSession?.uid;
+				const uid = page.data.userSession?.uid;
 				if (uid) {
 					await updateDocument<Student>('students', uid, { photoUrl: url });
 				}
@@ -60,15 +64,15 @@
 	};
 </script>
 
-<button class="btn btn-xs btn-ghost btn-circle absolute top-0 right-0" on:click={onOpen}>
+<button class="btn absolute top-0 right-0 btn-circle btn-ghost btn-xs" onclick={onOpen}>
 	<Pen size={18} />
 </button>
 <dialog bind:this={dialog} class="modal">
 	<form class="modal-box max-w-max">
-		<h3 class="font-bold text-lg mb-8">Update Avatar</h3>
-		<div class="flex flex-col gap-4 items-center">
+		<h3 class="mb-8 text-lg font-bold">Update Avatar</h3>
+		<div class="flex flex-col items-center gap-4">
 			<div class="avatar">
-				<div class="rounded w-72">
+				<div class="w-72 rounded">
 					<img class="w-full object-contain" bind:this={image} src={photoUrl} alt="" />
 				</div>
 			</div>
@@ -77,16 +81,16 @@
 				bind:this={input}
 				class="file-input w-72"
 				accept=".jpg, .jpeg, .png"
-				on:change={onChange}
+				onchange={onChange}
 			/>
 		</div>
 		<div class="modal-action">
-			<button class="btn btn-ghost" type="button" on:click={() => dialog.close()}>
+			<button class="btn btn-ghost" type="button" onclick={() => dialog.close()}>
 				<X size={18} /> Close
 			</button>
-			<button class="btn btn-accent" on:click={onUpload} disabled={busy}>
+			<button class="btn btn-accent" onclick={onUpload} disabled={busy}>
 				{#if busy}
-					<Save size={18} /> Saving <span class="loading loading-dots loading-sm" />
+					<Save size={18} /> Saving <span class="loading loading-sm loading-dots"></span>
 				{:else}
 					<Save size={18} /> Save
 				{/if}
@@ -94,6 +98,6 @@
 		</div>
 	</form>
 	<form method="dialog" class="modal-backdrop">
-		<button />
+		<button>a</button>
 	</form>
 </dialog>

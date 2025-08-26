@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { afterNavigate, goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import { X } from '@lucide/svelte';
 	import { Html5Qrcode } from 'html5-qrcode';
-	import { X } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
-	let busy = false;
+	let busy = $state(false);
 	let html5Qrcode: Html5Qrcode;
 	let from = '/';
 
@@ -33,7 +33,7 @@
 	}
 
 	async function onScanSuccess(decodedText: any) {
-		const link = `${decodedText}&uid=${$page.data.userSession?.uid}`;
+		const link = `${decodedText}&uid=${page.data.userSession?.uid}`;
 		await stop();
 		goto(link);
 	}
@@ -43,12 +43,12 @@
 	}
 </script>
 
-<main class="flex justify-center items-center min-h-[100dvh] p-4">
-	<div class="flex flex-col w-full h-full">
-		<reader id="reader" />
-		<button on:click={stop} class="btn mt-4">
+<main class="flex min-h-[100dvh] items-center justify-center p-4">
+	<div class="flex h-full w-full flex-col">
+		<reader id="reader"></reader>
+		<button onclick={stop} class="btn mt-4">
 			{#if busy}
-				Stopping <span class="loading loading-dots loading-md" />
+				Stopping <span class="loading loading-md loading-dots"></span>
 			{:else}
 				<X size={18} />Cancel
 			{/if}

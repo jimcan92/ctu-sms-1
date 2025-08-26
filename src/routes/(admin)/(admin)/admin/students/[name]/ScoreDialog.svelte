@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { LabeledInput } from '$lib/components/ui/labeled-input';
 	import { LabeledSelect } from '$lib/components/ui/labeled-select';
+	import { cn, toTitleCase } from '$lib/cutils';
 	import { saveDocument } from '$lib/services/client';
 	import { selectedDate } from '$lib/stores';
 	import { selectedSubject, selectedUid } from '$lib/stores/admin';
-	import { cn, toTitleCase } from '$lib/utils';
 	import dayjs from 'dayjs';
 	import { Timestamp } from 'firebase/firestore';
 
@@ -13,11 +13,11 @@
 	const terms: ScoreTerm[] = ['midterm', 'final'];
 	const types: ScoreFor[] = ['quiz', 'assignment', 'project', 'participation'];
 
-	let term: ScoreTerm;
-	let scoreFor: ScoreFor;
-	let perfect = '100';
-	let value = '';
-	let no: string | undefined;
+	let term: ScoreTerm = $state('midterm');
+	let scoreFor: ScoreFor = $state('quiz');
+	let perfect = $state('100');
+	let value = $state('');
+	let no: string | undefined = $state();
 
 	async function onSave() {
 		if ($selectedUid && $selectedSubject) {
@@ -46,10 +46,10 @@
 	}
 </script>
 
-<button class="btn join-item w-full max-w-sm" on:click={() => dialog.showModal()}> Score </button>
+<button class="btn join-item w-full max-w-sm" onclick={() => dialog.showModal()}> Score </button>
 <dialog bind:this={dialog} class="modal">
-	<form method="dialog" class="modal-box flex flex-col gap-2 max-w-fit">
-		<h3 class="font-bold text-lg">Score</h3>
+	<form method="dialog" class="modal-box flex max-w-fit flex-col gap-2">
+		<h3 class="text-lg font-bold">Score</h3>
 		<div class="flex gap-2">
 			<LabeledSelect label="Term" class="select-bordered" bind:value={term}>
 				{#each terms as t}
@@ -78,7 +78,7 @@
 		</div>
 		<div class="modal-action">
 			<button class="btn btn-ghost">Cancel</button>
-			<button class={cn('btn btn-accent')} on:click={onSave}> Save </button>
+			<button class={cn('btn btn-accent')} onclick={onSave}> Save </button>
 		</div>
 	</form>
 </dialog>
